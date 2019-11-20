@@ -22,6 +22,7 @@ Metadata:
           - PublicSubnet1ID
           - PublicSubnet2ID
           - PublicSubnet3ID
+          - OSMClusterSDNSubnetCIDR
           - RemoteAccessCIDR
           - ContainerAccessCIDR
       - Label:
@@ -96,6 +97,8 @@ Metadata:
         default: Public Subnet 2 ID
       PublicSubnet3ID:
         default: Public Subnet 3 ID
+      OSMClusterSDNSubnetCIDR:
+        default: OSM Cluster SDN Subnet CIDR - osm_cluster_network_cidr
       QSS3BucketName:
         default: Quick Start S3 Bucket Name
       QSS3KeyPrefix:
@@ -212,6 +215,12 @@ Parameters:
     Description: ID of public subnet 3 in Availability Zone 3 for the ELB load balancer
       (e.g., subnet-e324ad8e)
     Type: String
+  OSMClusterSDNSubnetCIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[4-9]|2[0-2]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/14-22
+    Default: 10.128.0.0/14
+    Description: CIDR block for the OSM Cluster SDN Subnet CIDR - osm_cluster_network_cidr
+    Type: String
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: Quick Start bucket name can include numbers, lowercase
@@ -230,6 +239,12 @@ Parameters:
     Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
       can include numbers, lowercase letters, uppercase letters, hyphens (-), and
       forward slash (/).
+    Type: String
+  OSMClusterSDNSubnetCIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[4-9]|2[0-2]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/14-22
+    Default: 10.128.0.0/14
+    Description: CIDR block for the OSM Cluster SDN Subnet CIDR - osm_cluster_network_cidr
     Type: String
   RemoteAccessCIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
@@ -2241,6 +2256,7 @@ Resources:
         Fn::Sub:
           - |
             #!/bin/bash -x
+            export OSM_cluster_SDNSubnetCIDR=${OSMClusterSDNSubnetCIDR}
             export QSLOCATION=https://${QSS3BucketName}.${S3Region}.amazonaws.com/${QSS3KeyPrefix}
             export ENABLE_HAWKULAR=${HawkEnable}
             export GET_ANSIBLE_FROM_GIT=${AnsibleFromGit}

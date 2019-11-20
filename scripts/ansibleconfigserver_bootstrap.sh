@@ -74,6 +74,7 @@ qs_retry_command 10 cfn-init -v --stack ${AWS_STACKNAME} --resource AnsibleConfi
 
 echo openshift_master_cluster_hostname=${INTERNAL_MASTER_ELBDNSNAME} >> /tmp/openshift_inventory_userdata_vars
 echo openshift_master_cluster_public_hostname=${MASTER_ELBDNSNAME} >> /tmp/openshift_inventory_userdata_vars
+echo osm_cluster_network_cidr=${OSM_cluster_SDNSubnetCIDR} >> /tmp/openshift_inventory_userdata_vars
 
 if [ "$(echo ${MASTER_ELBDNSNAME} | grep -c '\.elb\.amazonaws\.com')" == "0" ] ; then
     echo openshift_master_default_subdomain=${MASTER_ELBDNSNAME} >> /tmp/openshift_inventory_userdata_vars
